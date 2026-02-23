@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🤜🤛 For My Bro — Jade Louie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Permanent+Marker&family=Bebas+Neue&family=Bangers&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{
+      min-height:100vh;
+      background:#0a0a1a;
+      font-family:'Poppins',sans-serif;
+      color:#e0e8ff;
+      overflow-x:hidden;
+      cursor:default;
+    }
+    /* ===== CANVAS BG ===== */
+    #bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+    /* ===== FLOATING PARTICLES ===== */
+    .particle{
+      position:fixed;pointer-events:none;z-index:1;border-radius:50%;
+      animation:particleFloat linear infinite;opacity:0;
+    }
+    @keyframes particleFloat{
+      0%{transform:translateY(0) translateX(0) scale(0);opacity:0;}
+      15%{opacity:1;}
+      85%{opacity:0.6;}
+      100%{transform:translateY(-100vh) translateX(var(--dx)) scale(1.2);opacity:0;}
+    }
+    /* ===== FLOATING EMOJIS ===== */
+    .float-emoji{
+      position:fixed;bottom:-60px;pointer-events:none;z-index:2;
+      opacity:0;animation:riseEmoji linear infinite;
+    }
+    @keyframes riseEmoji{
+      0%{transform:translateY(0) rotate(0deg) scale(0.4);opacity:0;}
+      10%{opacity:0.5;}
+      90%{opacity:0.2;}
+      100%{transform:translateY(-110vh) rotate(360deg) scale(1);opacity:0;}
+    }
+    /* ===== CURSOR GLOW ===== */
+    .cursor-glow{
+      position:fixed;width:300px;height:300px;
+      background:radial-gradient(circle,rgba(0,200,255,0.06) 0%,transparent 70%);
+      border-radius:50%;pointer-events:none;z-index:1;
+      transform:translate(-50%,-50%);transition:left 0.3s ease,top 0.3s ease;
+    }
+    /* ===== CLICK RIPPLE ===== */
+    .ripple{
+      position:fixed;border-radius:50%;pointer-events:none;z-index:999;
+      border:2px solid rgba(0,200,255,0.6);
+      animation:rippleOut 0.8s ease forwards;
+    }
+    @keyframes rippleOut{
+      0%{width:0;height:0;opacity:1;transform:translate(-50%,-50%);}
+      100%{width:150px;height:150px;opacity:0;transform:translate(-50%,-50%);}
+    }
+    /* ==================== STAGE 0: INTRO ==================== */
+    #introStage{
+      position:fixed;top:0;left:0;width:100%;height:100%;z-index:1000;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:radial-gradient(ellipse at 50% 50%,#0f1028 0%,#0a0a1a 100%);
+      transition:opacity 1.5s ease,transform 1.5s ease;
+      text-align:center;padding:20px;
+    }
+    #introStage.hide{opacity:0;transform:scale(1.08);pointer-events:none;}
+    .fist-bump{
+      font-size:5rem;display:flex;align-items:center;gap:0;
+      margin-bottom:25px;
+    }
+    .fist-l{
+      display:inline-block;
+      animation:fistLeft 1.5s ease-in-out infinite;
+    }
+    .fist-r{
+      display:inline-block;
+      animation:fistRight 1.5s ease-in-out infinite;
+    }
+    .bump-spark{
+      font-size:2rem;
+      animation:sparkPop 1.5s ease-in-out infinite;
+    }
+    @keyframes fistLeft{
+      0%,100%{transform:translateX(0);}
+      50%{transform:translateX(12px);}
+    }
+    @keyframes fistRight{
+      0%,100%{transform:translateX(0);}
+      50%{transform:translateX(-12px);}
+    }
+    @keyframes sparkPop{
+      0%,100%{transform:scale(0.5);opacity:0.3;}
+      50%{transform:scale(1.3);opacity:1;}
+    }
+    .intro-tag{
+      font-family:'Orbitron',monospace;font-size:0.55rem;
+      letter-spacing:6px;text-transform:uppercase;
+      color:rgba(0,200,255,0.4);margin-bottom:10px;
+      opacity:0;animation:fadeUp 1s ease 0.5s forwards;
+    }
+    .intro-name{
+      font-family:'Permanent Marker',cursive;font-size:2.8rem;
+      background:linear-gradient(135deg,#00c8ff,#00ff88,#c0ff00,#00c8ff);
+      background-size:300% 300%;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      animation:gradMove 4s ease infinite, fadeUp 1s ease 0.8s forwards;
+      opacity:0;line-height:1.2;
+    }
+    .intro-sub{
+      font-size:0.85rem;color:rgba(200,220,255,0.45);
+      margin-top:8px;opacity:0;animation:fadeUp 1s ease 1.3s forwards;
+    }
+    .intro-tap{
+      font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;
+      color:rgba(0,200,255,0.15);margin-top:40px;
+      opacity:0;animation:fadeUp 1s ease 2s forwards, blink 2.5s ease-in-out infinite 2.5s;
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes blink{0%,100%{opacity:0.15;}50%{opacity:0.6;}}
+    @keyframes gradMove{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+    /* ==================== STAGE 1: TYPEWRITER ==================== */
+    #typewriterStage{
+      position:fixed;top:0;left:0;width:100%;height:100%;z-index:900;
+      display:none;flex-direction:column;align-items:center;justify-content:center;
+      background:#0a0a1a;text-align:center;padding:30px;
+    }
+    #typewriterStage.show{display:flex;animation:stageIn 1s ease;}
+    @keyframes stageIn{from{opacity:0;}to{opacity:1;}}
+    .tw-line{
+      font-family:'Poppins',sans-serif;font-weight:300;
+      font-size:1.3rem;color:rgba(200,220,255,0.7);
+      line-height:2.2;min-height:2.2em;
+      max-width:600px;opacity:0;transform:translateY(10px);
+      transition:all 0.8s ease;
+    }
+    .tw-line.visible{opacity:1;transform:translateY(0);}
+    .tw-line.accent{
+      font-family:'Permanent Marker',cursive;font-size:2rem;
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .tw-continue{
+      position:absolute;bottom:40px;font-size:0.5rem;
+      letter-spacing:5px;text-transform:uppercase;
+      color:rgba(0,200,255,0.15);cursor:pointer;
+      opacity:0;transition:opacity 1s ease;
+    }
+    .tw-continue.show{opacity:1;animation:blink 2s ease-in-out infinite;}
+    /* ==================== STAGE 2: CONTROLLER ==================== */
+    #controllerStage{
+      position:fixed;top:0;left:0;width:100%;height:100%;z-index:800;
+      display:none;flex-direction:column;align-items:center;justify-content:center;
+      background:#0a0a1a;text-align:center;padding:20px;
+    }
+    #controllerStage.show{display:flex;animation:stageIn 1s ease;}
+    .controller-emoji{
+      font-size:5rem;
+      animation:controllerBounce 1s ease-in-out infinite;
+      filter:drop-shadow(0 0 25px rgba(0,200,255,0.3));
+    }
+    @keyframes controllerBounce{
+      0%,100%{transform:translateY(0) rotate(-5deg);}
+      50%{transform:translateY(-15px) rotate(5deg);}
+    }
+    .ctrl-text{
+      font-family:'Poppins',sans-serif;font-size:1.1rem;
+      color:rgba(200,220,255,0.6);margin-top:25px;
+      max-width:400px;line-height:1.8;
+      opacity:0;animation:fadeUp 1s ease 0.5s forwards;
+    }
+    .ctrl-text em{
+      font-family:'Permanent Marker',cursive;font-style:normal;
+      font-size:1.5rem;
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .ctrl-stat{
+      margin-top:20px;font-size:2.2rem;font-weight:900;
+      font-family:'Orbitron',monospace;
+      background:linear-gradient(135deg,#00ff88,#00c8ff);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      opacity:0;animation:fadeUp 1s ease 1.5s forwards;
+    }
+    .ctrl-label{
+      font-size:0.5rem;letter-spacing:5px;color:rgba(255,255,255,0.2);
+      margin-top:5px;opacity:0;animation:fadeUp 1s ease 2s forwards;
+    }
+    .ctrl-continue{
+      position:absolute;bottom:40px;font-size:0.5rem;
+      letter-spacing:5px;text-transform:uppercase;
+      color:rgba(0,200,255,0.15);cursor:pointer;
+      opacity:0;animation:fadeUp 1s ease 3.5s forwards, blink 2s ease-in-out infinite 3.5s;
+    }
+    /* ==================== MAIN CONTENT ==================== */
+    .main{display:none;position:relative;z-index:10;}
+    .main.show{display:block;animation:stageIn 1.5s ease;}
+    /* HERO */
+    .hero{
+      min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      padding:40px 20px;position:relative;
+    }
+    .hero-aurora{
+      position:absolute;width:100%;height:100%;top:0;left:0;
+      background:
+        radial-gradient(ellipse at 30% 20%,rgba(0,100,255,0.06) 0%,transparent 50%),
+        radial-gradient(ellipse at 70% 80%,rgba(0,255,136,0.05) 0%,transparent 50%),
+        radial-gradient(ellipse at 50% 50%,rgba(0,200,255,0.03) 0%,transparent 60%);
+      animation:auroraShift 8s ease-in-out infinite alternate;
+    }
+    @keyframes auroraShift{0%{opacity:0.6;transform:scale(1);}100%{opacity:1;transform:scale(1.05);}}
+    .hero-tag{
+      font-family:'Orbitron',monospace;
+      font-size:0.5rem;letter-spacing:6px;text-transform:uppercase;
+      color:rgba(0,200,255,0.4);padding:8px 24px;
+      border:1px solid rgba(0,200,255,0.15);border-radius:30px;
+      backdrop-filter:blur(10px);z-index:2;margin-bottom:20px;
+    }
+    .hero-headline{
+      font-family:'Permanent Marker',cursive;font-size:4rem;
+      background:linear-gradient(135deg,#00c8ff,#00ff88,#c0ff00,#00c8ff);
+      background-size:300% 300%;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      animation:gradMove 4s ease infinite;z-index:2;line-height:1.2;
+    }
+    .hero-name{
+      font-family:'Bangers',cursive;font-size:5rem;
+      background:linear-gradient(135deg,#ff6b00,#ffcc00,#ff6b00);
+      background-size:300% 300%;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      animation:gradMove 3s ease infinite;z-index:2;line-height:1.1;
+      filter:drop-shadow(0 0 20px rgba(255,150,0,0.3));
+      margin:5px 0 10px;
+    }
+    .hero-sub{
+      font-size:0.9rem;color:rgba(200,220,255,0.45);
+      z-index:2;letter-spacing:1px;
+    }
+    .hero-quote{
+      font-family:'Poppins',sans-serif;font-weight:300;font-style:italic;
+      font-size:1rem;color:rgba(200,220,255,0.4);margin-top:25px;
+      max-width:480px;line-height:1.7;z-index:2;
+    }
+    .scroll-down{
+      position:absolute;bottom:25px;font-size:0.45rem;
+      letter-spacing:5px;text-transform:uppercase;
+      font-family:'Orbitron',monospace;
+      color:rgba(0,200,255,0.2);z-index:2;
+      animation:scrollBounce 2.5s ease-in-out infinite;
+    }
+    .scroll-down span{display:block;margin-top:6px;font-size:1.2rem;}
+    @keyframes scrollBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+    /* ===== SECTIONS ===== */
+    .sect{
+      padding:80px 20px;max-width:700px;margin:0 auto;
+      opacity:0;transform:translateY(60px);
+      transition:all 1s cubic-bezier(0.22,0.61,0.36,1);
+    }
+    .sect.vis{opacity:1;transform:translateY(0);}
+    .sect-label{
+      font-family:'Orbitron',monospace;
+      font-size:0.45rem;letter-spacing:7px;text-transform:uppercase;
+      color:rgba(0,200,255,0.3);margin-bottom:6px;
+    }
+    .sect-title{
+      font-family:'Permanent Marker',cursive;font-size:2rem;
+      margin-bottom:22px;line-height:1.3;
+    }
+    .sect-title .neon{
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    /* DIVIDER */
+    .div-line{
+      display:flex;align-items:center;justify-content:center;
+      gap:15px;padding:20px 0;max-width:700px;margin:0 auto;
+    }
+    .div-line i{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(0,200,255,0.15),transparent);}
+    .div-line span{color:rgba(0,200,255,0.25);font-size:0.8rem;}
+    /* BRO CARD */
+    .bro-card{
+      background:linear-gradient(145deg,rgba(0,200,255,0.04),rgba(0,255,136,0.02));
+      border:1px solid rgba(0,200,255,0.1);border-radius:24px;
+      padding:40px 30px;position:relative;overflow:hidden;
+      backdrop-filter:blur(6px);
+    }
+    .bro-card::before{
+      content:'🤜🤛';position:absolute;top:-10px;right:-5px;
+      font-size:4rem;opacity:0.04;
+    }
+    .bro-card p{
+      font-family:'Poppins',sans-serif;font-weight:300;
+      font-size:1rem;line-height:2;color:rgba(200,220,255,0.65);margin-bottom:14px;
+    }
+    .bro-card p:last-child{margin-bottom:0;}
+    .bro-card .hl{color:#00e5ff;font-weight:600;}
+    .bro-card .sig{
+      font-family:'Permanent Marker',cursive;font-size:1.4rem;
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      margin-top:20px;display:block;
+    }
+    /* REASONS */
+    .reasons{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px;}
+    .r-card{
+      background:rgba(0,200,255,0.03);border:1px solid rgba(0,200,255,0.08);
+      border-radius:20px;padding:28px 18px;text-align:center;
+      transition:all 0.5s ease;cursor:default;
+    }
+    .r-card:hover{
+      transform:translateY(-6px);border-color:rgba(0,200,255,0.35);
+      background:rgba(0,200,255,0.06);
+      box-shadow:0 12px 40px rgba(0,200,255,0.08);
+    }
+    .r-icon{font-size:2.2rem;margin-bottom:10px;display:block;}
+    .r-title{
+      font-family:'Permanent Marker',cursive;font-size:0.85rem;
+      color:#00e5ff;margin-bottom:5px;
+    }
+    .r-desc{font-size:0.7rem;color:rgba(255,255,255,0.35);line-height:1.5;}
+    /* BRO CODE */
+    .bro-code-list{display:flex;flex-direction:column;gap:14px;margin-top:22px;}
+    .bro-code-item{
+      display:flex;align-items:flex-start;gap:16px;
+      padding:22px 20px;background:rgba(0,200,255,0.02);
+      border:1px solid rgba(0,200,255,0.08);border-radius:18px;
+      transition:all 0.4s ease;position:relative;overflow:hidden;
+    }
+    .bro-code-item:hover{border-color:rgba(0,200,255,0.3);background:rgba(0,200,255,0.05);}
+    .bro-code-item::before{
+      content:'';position:absolute;left:0;top:0;width:3px;height:100%;
+      background:linear-gradient(180deg,#00c8ff,#00ff88);
+      border-radius:0 3px 3px 0;
+    }
+    .code-num{
+      font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      min-width:35px;
+    }
+    .code-text{
+      font-size:0.9rem;color:rgba(200,220,255,0.6);line-height:1.7;
+    }
+    /* MEMORY CARDS (FLIP) */
+    .flip-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:22px;}
+    .flip-card{perspective:800px;height:150px;cursor:pointer;}
+    .flip-inner{
+      position:relative;width:100%;height:100%;
+      transition:transform 0.7s ease;transform-style:preserve-3d;
+    }
+    .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+    .flip-front,.flip-back{
+      position:absolute;width:100%;height:100%;
+      backface-visibility:hidden;border-radius:16px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:12px;
+    }
+    .flip-front{
+      background:linear-gradient(135deg,rgba(0,200,255,0.1),rgba(0,255,136,0.05));
+      border:1px solid rgba(0,200,255,0.15);
+    }
+    .flip-front span{font-size:2rem;}
+    .flip-front small{
+      font-family:'Orbitron',monospace;
+      font-size:0.4rem;letter-spacing:3px;text-transform:uppercase;
+      color:rgba(0,200,255,0.3);margin-top:8px;
+    }
+    .flip-back{
+      background:linear-gradient(135deg,rgba(0,200,255,0.15),rgba(0,255,136,0.08));
+      border:1px solid rgba(0,200,255,0.25);
+      transform:rotateY(180deg);
+    }
+    .flip-back p{
+      font-family:'Poppins',sans-serif;font-size:0.75rem;
+      color:rgba(200,230,255,0.8);text-align:center;line-height:1.5;font-weight:300;
+    }
+    /* LEVEL UP BAR */
+    .level-section{margin-top:22px;}
+    .level-bar-wrap{
+      margin:14px 0;
+    }
+    .level-label{
+      font-family:'Orbitron',monospace;font-size:0.5rem;
+      letter-spacing:3px;color:rgba(0,200,255,0.4);
+      margin-bottom:6px;display:flex;justify-content:space-between;
+    }
+    .level-bar{
+      height:10px;background:rgba(255,255,255,0.05);
+      border-radius:10px;overflow:hidden;border:1px solid rgba(0,200,255,0.1);
+    }
+    .level-fill{
+      height:100%;border-radius:10px;
+      background:linear-gradient(90deg,#00c8ff,#00ff88);
+      width:0%;transition:width 2s cubic-bezier(0.22,0.61,0.36,1);
+      box-shadow:0 0 15px rgba(0,200,255,0.4);
+    }
+    .level-fill.animate{width:var(--fill);}
+    /* TIMELINE */
+    .timeline{margin-top:22px;position:relative;padding-left:30px;}
+    .timeline::before{
+      content:'';position:absolute;left:8px;top:0;width:2px;height:100%;
+      background:linear-gradient(180deg,#00c8ff,#00ff88,transparent);
+    }
+    .tl-item{position:relative;margin-bottom:28px;padding-left:20px;}
+    .tl-item::before{
+      content:'';position:absolute;left:-26px;top:4px;
+      width:14px;height:14px;border-radius:50%;
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      box-shadow:0 0 12px rgba(0,200,255,0.4);
+    }
+    .tl-tag{
+      font-family:'Orbitron',monospace;font-size:0.45rem;
+      letter-spacing:4px;color:rgba(0,200,255,0.4);margin-bottom:4px;
+    }
+    .tl-text{
+      font-size:0.9rem;color:rgba(200,220,255,0.6);line-height:1.6;
+    }
+    /* FINALE */
+    .finale{
+      min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      padding:50px 20px;position:relative;
+    }
+    .finale-glow{
+      position:absolute;width:350px;height:350px;
+      background:radial-gradient(circle,rgba(0,200,255,0.08) 0%,transparent 70%);
+      border-radius:50%;animation:glowPulse 4s ease-in-out infinite;
+    }
+    @keyframes glowPulse{0%,100%{opacity:0.6;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
+    .finale-big{
+      font-family:'Permanent Marker',cursive;font-size:3.2rem;
+      background:linear-gradient(135deg,#00c8ff,#00ff88,#c0ff00,#00c8ff);
+      background-size:300% 300%;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      animation:gradMove 3s ease infinite;z-index:2;line-height:1.3;
+    }
+    .finale-name{
+      font-family:'Bangers',cursive;font-size:4rem;
+      background:linear-gradient(135deg,#ff6b00,#ffcc00,#ff6b00);
+      background-size:300% 300%;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      animation:gradMove 3s ease infinite;z-index:2;
+      filter:drop-shadow(0 0 15px rgba(255,150,0,0.3));
+    }
+    .finale-sub{
+      font-size:0.85rem;color:rgba(200,220,255,0.4);
+      max-width:420px;line-height:1.8;margin:20px 0 35px;z-index:2;
+    }
+    .bro-btn{
+      padding:18px 55px;border:none;border-radius:50px;
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      color:#0a0a1a;font-family:'Permanent Marker',cursive;font-size:0.95rem;
+      letter-spacing:2px;cursor:pointer;z-index:2;
+      box-shadow:0 12px 45px rgba(0,200,255,0.25);
+      transition:all 0.4s ease;position:relative;overflow:hidden;
+      font-weight:700;
+    }
+    .bro-btn::after{
+      content:'';position:absolute;top:-50%;left:-50%;
+      width:200%;height:200%;
+      background:linear-gradient(45deg,transparent,rgba(255,255,255,0.2),transparent);
+      animation:shine 3s ease infinite;
+    }
+    @keyframes shine{0%{transform:translateX(-100%) rotate(45deg);}100%{transform:translateX(100%) rotate(45deg);}}
+    .bro-btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 18px 55px rgba(0,200,255,0.4);}
+    .bro-btn:active{transform:scale(0.95);}
+    /* EXPLOSION */
+    .ex-emoji{
+      position:fixed;pointer-events:none;z-index:500;
+      transition:all 2s cubic-bezier(0.22,0.61,0.36,1);
+    }
+    /* FINAL MSG */
+    .final-reveal{
+      display:none;margin-top:35px;text-align:center;z-index:2;
+      animation:fadeUp 1.2s ease forwards;
+    }
+    .final-reveal.show{display:block;}
+    .final-words{
+      font-size:1.1rem;font-weight:300;
+      color:rgba(200,220,255,0.6);
+      max-width:450px;line-height:1.9;margin:0 auto;
+    }
+    .final-words strong{
+      font-family:'Permanent Marker',cursive;
+      font-size:1.5rem;
+      background:linear-gradient(135deg,#00c8ff,#00ff88);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .final-emoji{font-size:3.5rem;display:block;margin-top:20px;animation:controllerBounce 1s ease-in-out infinite;}
+    .final-sig{
+      font-family:'Orbitron',monospace;
+      font-size:0.5rem;letter-spacing:5px;text-transform:uppercase;
+      color:rgba(0,200,255,0.15);margin-top:25px;
+    }
+    /* ===== NEON BORDER GLOW ===== */
+    .neon-border{
+      position:relative;
+    }
+    .neon-border::after{
+      content:'';position:absolute;inset:-1px;border-radius:inherit;
+      background:linear-gradient(135deg,#00c8ff,#00ff88,#00c8ff);
+      z-index:-1;opacity:0;transition:opacity 0.4s ease;
+      filter:blur(8px);
+    }
+    .neon-border:hover::after{opacity:0.3;}
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:768px){
+      .hero-headline{font-size:3rem;}
+      .hero-name{font-size:3.5rem;}
+      .hero-quote{font-size:0.9rem;}
+      .sect-title{font-size:1.6rem;}
+      .bro-card{padding:30px 22px;}
+      .finale-big{font-size:2.5rem;}
+      .finale-name{font-size:3rem;}
+      .tw-line{font-size:1.1rem;}
+      .tw-line.accent{font-size:1.6rem;}
+      .intro-name{font-size:2.2rem;}
+      .fist-bump{font-size:4rem;}
+      .flip-card{height:130px;}
+    }
+    @media(max-width:480px){
+      .hero-headline{font-size:2.3rem;}
+      .hero-name{font-size:2.8rem;}
+      .hero-quote{font-size:0.8rem;max-width:320px;}
+      .hero-sub{font-size:0.75rem;}
+      .hero-tag{font-size:0.4rem;padding:6px 16px;}
+      .sect{padding:50px 18px;}
+      .sect-title{font-size:1.3rem;}
+      .sect-label{font-size:0.4rem;}
+      .bro-card{padding:24px 18px;border-radius:18px;}
+      .bro-card p{font-size:0.88rem;}
+      .reasons{grid-template-columns:1fr;gap:12px;}
+      .r-card{padding:22px 16px;}
+      .flip-grid{grid-template-columns:1fr 1fr;gap:10px;}
+      .flip-card{height:120px;}
+      .flip-back p{font-size:0.68rem;}
+      .finale-big{font-size:1.8rem;}
+      .finale-name{font-size:2.2rem;}
+      .finale-sub{font-size:0.75rem;}
+      .bro-btn{padding:14px 38px;font-size:0.8rem;}
+      .intro-name{font-size:1.8rem;}
+      .intro-sub{font-size:0.75rem;}
+      .fist-bump{font-size:3.5rem;}
+      .tw-line{font-size:0.95rem;}
+      .tw-line.accent{font-size:1.3rem;}
+      .controller-emoji{font-size:4rem;}
+      .ctrl-text{font-size:0.9rem;}
+      .ctrl-text em{font-size:1.2rem;}
+      .ctrl-stat{font-size:1.8rem;}
+      .code-text{font-size:0.8rem;}
+      .code-num{font-size:1.2rem;min-width:28px;}
+      .bro-code-item{padding:18px 16px;gap:12px;}
+      .tl-text{font-size:0.8rem;}
+    }
+    @media(max-width:360px){
+      .hero-headline{font-size:1.8rem;}
+      .hero-name{font-size:2.2rem;}
+      .sect-title{font-size:1.1rem;}
+      .bro-card p{font-size:0.8rem;}
+      .finale-big{font-size:1.5rem;}
+      .finale-name{font-size:1.8rem;}
+      .flip-grid{grid-template-columns:1fr 1fr;}
+      .flip-card{height:105px;}
+      .intro-name{font-size:1.5rem;}
+      .fist-bump{font-size:3rem;}
+    }
+    @media(max-height:500px) and (orientation:landscape){
+      .hero{min-height:auto;padding:30px 20px;}
+      .finale{min-height:auto;padding:30px 20px;}
+      .scroll-down{display:none;}
+      .hero-headline{font-size:2rem;}
+      .intro-name{font-size:1.6rem;}
+      .fist-bump{font-size:2.5rem;}
+    }
+    @media(min-width:1200px){
+      .hero-headline{font-size:5rem;}
+      .hero-name{font-size:6rem;}
+      .hero-quote{font-size:1.2rem;max-width:560px;}
+      .sect-title{font-size:2.5rem;}
+      .bro-card{padding:50px 45px;}
+      .bro-card p{font-size:1.1rem;}
+      .finale-big{font-size:4rem;}
+      .finale-name{font-size:5rem;}
+      .flip-card{height:170px;}
+    }
+  </style>
+</head>
+<body>
+<!-- BG CANVAS -->
+<canvas id="bgCanvas"></canvas>
+<!-- CURSOR GLOW -->
+<div class="cursor-glow" id="cursorGlow"></div>
+<!-- ===================== INTRO ===================== -->
+<div id="introStage">
+  <div class="fist-bump">
+    <span class="fist-l">🤜</span>
+    <span class="bump-spark">💥</span>
+    <span class="fist-r">🤛</span>
+  </div>
+  <p class="intro-tag">a tribute to the realest one</p>
+  <h1 class="intro-name">Jade Louie Omongos</h1>
+  <p class="intro-sub">This one's for you, bro. 💯</p>
+  <p class="intro-tap">tap anywhere to begin</p>
+</div>
+<!-- ===================== TYPEWRITER ===================== -->
+<div id="typewriterStage">
+  <div id="twLines"></div>
+  <div class="tw-continue" id="twContinue">tap to continue →</div>
+</div>
+<!-- ===================== CONTROLLER STAGE ===================== -->
+<div id="controllerStage">
+  <div class="controller-emoji">🎮</div>
+  <p class="ctrl-text">
+    Bros who game together,<br>
+    <em>stay together</em>
+  </p>
+  <div class="ctrl-stat" id="broLevel">BRO LEVEL: ∞</div>
+  <p class="ctrl-label">FRIENDSHIP STATUS: UNBREAKABLE</p>
+  <div class="ctrl-continue" id="ctrlContinue">tap to continue →</div>
+</div>
+<!-- ===================== MAIN ===================== -->
+<div class="main" id="mainContent">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-aurora"></div>
+    <div class="hero-tag">🤜🤛 a page built for a legend</div>
+    <h1 class="hero-headline">To My Day-One</h1>
+    <div class="hero-name">Jade Louie</div>
+    <p class="hero-sub">The bro who never switched up. Not once. 💯</p>
+    <p class="hero-quote">"Real ones don't need a reason to stay — they just do. And you, bro, you've always been right there."</p>
+    <div class="scroll-down">scroll down <span>↓</span></div>
+  </section>
+  <div class="div-line"><i></i><span>⚡</span><i></i></div>
+  <!-- CHAPTER I: THE LETTER -->
+  <section class="sect" id="s1">
+    <div class="sect-label">Chapter I</div>
+    <h2 class="sect-title">A Message For My <span class="neon">Bro</span></h2>
+    <div class="bro-card">
+      <p>Yo Jade Louie,</p>
+      <p>I'm not really the type to get all sentimental, but I gotta say it — you're one of the <span class="hl">realest people</span> I've ever met. No cap.</p>
+      <p>You didn't just show up when things were good. You showed up when things were <span class="hl">rough, messy, and complicated</span>. That's not something everyone does, bro. That's rare.</p>
+      <p>We've laughed until we couldn't breathe, survived the dumbest situations together, and built a bond that <span class="hl">no distance or time can break</span>. You're not just a friend — you're <span class="hl">family</span>. 🤝</p>
+      <p>This page is just my way of saying: <span class="hl">I appreciate you more than you know</span>. For real. 💯</p>
+      <span class="sig">— Your bro, always 🤜🤛</span>
+    </div>
+  </section>
+  <div class="div-line"><i></i><span>🔥</span><i></i></div>
+  <!-- CHAPTER II: REASONS -->
+  <section class="sect" id="s2">
+    <div class="sect-label">Chapter II</div>
+    <h2 class="sect-title">Why You're The <span class="neon">GOAT</span> 🐐</h2>
+    <div class="reasons">
+      <div class="r-card neon-border">
+        <span class="r-icon">🛡️</span>
+        <div class="r-title">Always Got My Back</div>
+        <div class="r-desc">You never let me face anything alone. That's real loyalty right there.</div>
+      </div>
+      <div class="r-card neon-border">
+        <span class="r-icon">😂</span>
+        <div class="r-title">Humor Level: 999</div>
+        <div class="r-desc">Bro you got me laughing at the most random things. My stomach hurts every time. 💀</div>
+      </div>
+      <div class="r-card neon-border">
+        <span class="r-icon">💪</span>
+        <div class="r-title">Strong Mindset</div>
+        <div class="r-desc">You handle tough times like a champ. That mental strength is inspiring, for real.</div>
+      </div>
+      <div class="r-card neon-border">
+        <span class="r-icon">🎯</span>
+        <div class="r-title">Keeps It Real</div>
+        <div class="r-desc">No fake vibes. You say what's real even when it's hard. Respect.</div>
+      </div>
+      <div class="r-card neon-border">
+        <span class="r-icon">🌊</span>
+        <div class="r-title">Chill Energy</div>
+        <div class="r-desc">You bring the calm when everything's chaos. The ultimate vibe regulator.</div>
+      </div>
+      <div class="r-card neon-border">
+        <span class="r-icon">⚡</span>
+        <div class="r-title">Day-One Energy</div>
+        <div class="r-desc">From the start, you showed up differently. That's why you'll always be my bro.</div>
+      </div>
+    </div>
+  </section>
+  <div class="div-line"><i></i><span>⚡</span><i></i></div>
+  <!-- CHAPTER III: MEMORIES (FLIP) -->
+  <section class="sect" id="s3">
+    <div class="sect-label">Chapter III</div>
+    <h2 class="sect-title">Unlockable <span class="neon">Memories</span> 🔓</h2>
+    <p style="font-family:'Orbitron',monospace;font-size:0.5rem;color:rgba(0,200,255,0.25);margin-bottom:18px;letter-spacing:3px;">TAP EACH CARD TO UNLOCK</p>
+    <div class="flip-grid">
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front"><span>😂</span><small>memory 1</small></div>
+          <div class="flip-back"><p>That time we laughed so hard we literally couldn't breathe 💀</p></div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front"><span>🌃</span><small>memory 2</small></div>
+          <div class="flip-back"><p>Late night talks about life, dreams, and random things at 3AM 🌙</p></div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front"><span>🎮</span><small>memory 3</small></div>
+          <div class="flip-back"><p>Gaming sessions that lasted way too long but we didn't care 🕹️</p></div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front"><span>🍕</span><small>memory 4</small></div>
+          <div class="flip-back"><p>All the food trips and munchies we shared together 😋</p></div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front"><span>💯</span><small>memory 5</small></div>
+          <div class="flip-back"><p>When we had each other's back no matter what. Real ones. 🤝</p></div>
+        </div>
+      </div>
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front"><span>🔥</span><small>memory 6</small></div>
+          <div class="flip-back"><p>Every stupid inside joke that still makes us crack up 😭</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="div-line"><i></i><span>🔥</span><i></i></div>
+  <!-- CHAPTER IV: BRO CODE -->
+  <section class="sect" id="s4">
+    <div class="sect-label">Chapter IV</div>
+    <h2 class="sect-title">Our <span class="neon">Bro Code</span> 📜</h2>
+    <div class="bro-code-list">
+      <div class="bro-code-item">
+        <span class="code-num">#1</span>
+        <p class="code-text">Bros don't let bros go through hard times alone. Period. I got you, always.</p>
+      </div>
+      <div class="bro-code-item">
+        <span class="code-num">#2</span>
+        <p class="code-text">Whatever's said between us, stays between us. Trust is everything. 🔒</p>
+      </div>
+      <div class="bro-code-item">
+        <span class="code-num">#3</span>
+        <p class="code-text">We hype each other up. Your wins are my wins. No jealousy, just respect. 🏆</p>
+      </div>
+      <div class="bro-code-item">
+        <span class="code-num">#4</span>
+        <p class="code-text">Honest even when it's uncomfortable. That's how real bros operate. 💯</p>
+      </div>
+      <div class="bro-code-item">
+        <span class="code-num">#5</span>
+        <p class="code-text">No matter how far apart we end up — we stay connected. Distance ain't nothing. 🌍</p>
+      </div>
+    </div>
+  </section>
+  <div class="div-line"><i></i><span>⚡</span><i></i></div>
+  <!-- CHAPTER V: BRO STATS -->
+  <section class="sect" id="s5">
+    <div class="sect-label">Chapter V</div>
+    <h2 class="sect-title">Jade Louie's <span class="neon">Bro Stats</span> 📊</h2>
+    <div class="level-section">
+      <div class="level-bar-wrap">
+        <div class="level-label"><span>LOYALTY</span><span>100%</span></div>
+        <div class="level-bar"><div class="level-fill" style="--fill:100%"></div></div>
+      </div>
+      <div class="level-bar-wrap">
+        <div class="level-label"><span>HUMOR</span><span>98%</span></div>
+        <div class="level-bar"><div class="level-fill" style="--fill:98%"></div></div>
+      </div>
+      <div class="level-bar-wrap">
+        <div class="level-label"><span>TRUSTWORTHINESS</span><span>100%</span></div>
+        <div class="level-bar"><div class="level-fill" style="--fill:100%"></div></div>
+      </div>
+      <div class="level-bar-wrap">
+        <div class="level-label"><span>CHILL FACTOR</span><span>95%</span></div>
+        <div class="level-bar"><div class="level-fill" style="--fill:95%"></div></div>
+      </div>
+      <div class="level-bar-wrap">
+        <div class="level-label"><span>REALNESS</span><span>100%</span></div>
+        <div class="level-bar"><div class="level-fill" style="--fill:100%"></div></div>
+      </div>
+      <div class="level-bar-wrap">
+        <div class="level-label"><span>GAMING SKILLS</span><span>92%</span></div>
+        <div class="level-bar"><div class="level-fill" style="--fill:92%"></div></div>
+      </div>
+      <div class="level-bar-wrap">
+        <div class="level-label"><span>OVERALL BRO SCORE</span><span>∞</span></div>
+        <div class="level-bar"><div class="level-fill" style="--fill:100%;background:linear-gradient(90deg,#ff6b00,#ffcc00,#00ff88,#00c8ff);"></div></div>
+      </div>
+    </div>
+  </section>
+  <div class="div-line"><i></i><span>🔥</span><i></i></div>
+  <!-- CHAPTER VI: TIMELINE -->
+  <section class="sect" id="s6">
+    <div class="sect-label">Chapter VI</div>
+    <h2 class="sect-title">Our <span class="neon">Journey</span> 🛤️</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-tag">THE BEGINNING</div>
+        <p class="tl-text">We met and I knew right away — this dude is different. The energy just clicked. ⚡</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">BUILDING THE BOND</div>
+        <p class="tl-text">Late night conversations, inside jokes, and moments that turned us from friends into brothers. 🤝</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">THROUGH THE STORM</div>
+        <p class="tl-text">Life threw challenges at us. But we didn't fold. We had each other's backs when it mattered most. 🛡️</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">THE GOOD TIMES</div>
+        <p class="tl-text">Stupid adventures, uncontrollable laughter, memories we'll never forget. Peak bro moments. 🔥</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">RIGHT NOW</div>
+        <p class="tl-text">Here we are. Still solid. Still real. Still the same bros from day one — just leveled up. 🚀</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-tag">FOREVER</div>
+        <p class="tl-text">No matter where life takes us — we're brothers for life. That's not gonna change. Ever. ♾️</p>
+      </div>
+    </div>
+  </section>
+  <div class="div-line"><i></i><span>⚡</span><i></i></div>
+  <!-- FINALE -->
+  <section class="finale sect" id="sFinale">
+    <div class="finale-glow"></div>
+    <h2 class="finale-big">Bros For Life</h2>
+    <div class="finale-name">Jade Louie 🤜🤛</div>
+    <p class="finale-sub">This page isn't just code, bro. It's proof that you matter. You've made my life better just by being in it. No matter what happens — I got you. Always. 💯</p>
+    <button class="bro-btn" id="broBtn" onclick="triggerFinale()">🤜 TAP FOR A BRO MOMENT 🤛</button>
+    <div class="final-reveal" id="finalReveal">
+      <p class="final-words">
+        Jade Louie Omongos,<br><br>
+        You're not just a friend —<br>
+        you're a <strong>brother</strong>.<br><br>
+        You're <strong>one of a kind</strong>.<br>
+        You're <strong>irreplaceable</strong>.<br>
+        And this world is better<br>
+        because <strong>you're in it</strong>. 🔥<br><br>
+        Stay real. Stay you.<br>
+        And know that someone out here<br>
+        will <strong>always have your back</strong>. 💯
+      </p>
+      <span class="final-emoji">🤜💥🤛</span>
+      <p class="final-sig">brothers forever — no expiration date</p>
+    </div>
+  </section>
+  <div style="height:60px;"></div>
+</div>
+<script>
+// ============ STARFIELD ============
+const cv=document.getElementById('bgCanvas');
+const c=cv.getContext('2d');
+let stars=[];
+function resizeCanvas(){
+  cv.width=window.innerWidth;
+  cv.height=document.documentElement.scrollHeight||window.innerHeight*5;
+  stars=[];
+  const n=Math.min(200,Math.floor(window.innerWidth*0.15));
+  for(let i=0;i<n;i++){
+    stars.push({
+      x:Math.random()*cv.width,
+      y:Math.random()*cv.height,
+      r:Math.random()*1.5+0.3,
+      a:Math.random(),
+      da:(Math.random()-0.5)*0.015,
+      color:Math.random()>0.5?'rgba(0,200,255,':'rgba(0,255,136,'
+    });
+  }
+}
+resizeCanvas();
+window.addEventListener('resize',resizeCanvas);
+setTimeout(resizeCanvas,3000);
+function drawStars(){
+  c.clearRect(0,0,cv.width,cv.height);
+  stars.forEach(s=>{
+    s.a+=s.da;
+    if(s.a>1||s.a<0.1)s.da*=-1;
+    c.beginPath();
+    c.arc(s.x,s.y,s.r,0,Math.PI*2);
+    c.fillStyle=s.color+s.a+')';
+    c.fill();
+  });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+// ============ FLOATING EMOJIS ============
+const broEmojis=['🤜','🤛','💪','🔥','⚡','💯','🎮','🏀','🎯','🛡️','🚀','👊','✊','🤝','🫡'];
+function spawnEmoji(){
+  const e=document.createElement('span');
+  e.className='float-emoji';
+  e.textContent=broEmojis[Math.floor(Math.random()*broEmojis.length)];
+  e.style.left=Math.random()*100+'%';
+  e.style.fontSize=(Math.random()*1+0.5)+'rem';
+  e.style.animationDuration=(Math.random()*8+6)+'s';
+  e.style.animationDelay=(Math.random()*2)+'s';
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),16000);
+}
+setInterval(spawnEmoji,1200);
+// ============ PARTICLES ============
+function spawnParticle(){
+  const p=document.createElement('div');
+  p.className='particle';
+  const size=Math.random()*4+2;
+  p.style.width=size+'px';p.style.height=size+'px';
+  p.style.left=Math.random()*100+'vw';
+  p.style.bottom='-10px';
+  p.style.setProperty('--dx',(Math.random()-0.5)*100+'px');
+  const colors=['rgba(0,200,255,0.6)','rgba(0,255,136,0.5)','rgba(192,255,0,0.4)','rgba(255,107,0,0.4)'];
+  p.style.background=colors[Math.floor(Math.random()*colors.length)];
+  p.style.animationDuration=(Math.random()*8+7)+'s';
+  p.style.animationDelay=(Math.random()*3)+'s';
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),18000);
+}
+setInterval(spawnParticle,700);
+// ============ CURSOR GLOW ============
+if(window.innerWidth>768){
+  const glow=document.getElementById('cursorGlow');
+  document.addEventListener('mousemove',e=>{
+    glow.style.left=e.clientX+'px';
+    glow.style.top=e.clientY+'px';
+  });
+}
+// ============ CLICK RIPPLE ============
+document.addEventListener('click',e=>{
+  const r=document.createElement('div');
+  r.className='ripple';
+  r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';
+  document.body.appendChild(r);
+  setTimeout(()=>r.remove(),800);
+  for(let i=0;i<5;i++){
+    const s=document.createElement('div');
+    s.className='particle';
+    s.style.position='fixed';
+    s.style.width='5px';s.style.height='5px';
+    s.style.left=(e.clientX+(Math.random()-0.5)*60)+'px';
+    s.style.top=(e.clientY+(Math.random()-0.5)*60)+'px';
+    s.style.background=['#00c8ff','#00ff88','#c0ff00','#ff6b00','#fff'][Math.floor(Math.random()*5)];
+    s.style.opacity='1';s.style.animation='none';s.style.zIndex='999';
+    document.body.appendChild(s);
+    s.animate([{transform:'scale(1)',opacity:1},{transform:'scale(0)',opacity:0}],{duration:600,easing:'ease-out'});
+    setTimeout(()=>s.remove(),600);
+  }
+});
+// ============ INTRO ============
+const introStage=document.getElementById('introStage');
+let introDone=false;
+introStage.addEventListener('click',()=>{
+  if(introDone)return;
+  introDone=true;
+  introStage.classList.add('hide');
+  setTimeout(()=>{
+    introStage.style.display='none';
+    showTypewriter();
+  },1500);
+});
+// ============ TYPEWRITER ============
+const twStage=document.getElementById('typewriterStage');
+const twContainer=document.getElementById('twLines');
+const twContinueBtn=document.getElementById('twContinue');
+const twMessages=[
+  {text:"Yo, Jade Louie...",accent:false},
+  {text:"I know bros don't usually do this.",accent:false},
+  {text:"But you're different, man.",accent:false},
+  {text:"You've always been real with me.",accent:false},
+  {text:"So I gotta be real with you too.",accent:false},
+  {text:"You're not just a friend —",accent:false},
+  {text:"You're my brother. 🤜🤛",accent:true},
+  {text:"And that means everything. 💯",accent:true},
+];
+function showTypewriter(){
+  twStage.classList.add('show');
+  let i=0;
+  function showLine(){
+    if(i>=twMessages.length){
+      setTimeout(()=>twContinueBtn.classList.add('show'),800);
+      return;
+    }
+    const line=document.createElement('div');
+    line.className='tw-line'+(twMessages[i].accent?' accent':'');
+    line.textContent=twMessages[i].text;
+    twContainer.appendChild(line);
+    setTimeout(()=>{
+      line.classList.add('visible');
+      i++;
+      setTimeout(showLine,700);
+    },100);
+  }
+  setTimeout(showLine,600);
+}
+twContinueBtn.addEventListener('click',()=>{
+  twStage.style.transition='opacity 1s ease';
+  twStage.style.opacity='0';
+  setTimeout(()=>{
+    twStage.style.display='none';
+    showController();
+  },1000);
+});
+// ============ CONTROLLER STAGE ============
+const ctrlStage=document.getElementById('controllerStage');
+const ctrlContinue=document.getElementById('ctrlContinue');
+function showController(){
+  ctrlStage.classList.add('show');
+}
+ctrlContinue.addEventListener('click',()=>{
+  ctrlStage.style.transition='opacity 1s ease';
+  ctrlStage.style.opacity='0';
+  setTimeout(()=>{
+    ctrlStage.style.display='none';
+    document.getElementById('mainContent').classList.add('show');
+    setTimeout(resizeCanvas,500);
+  },1000);
+});
+// ============ SCROLL REVEAL ============
+const sects=document.querySelectorAll('.sect');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      en.target.classList.add('vis');
+      // animate level bars
+      if(en.target.id==='s5'){
+        document.querySelectorAll('.level-fill').forEach(bar=>{
+          setTimeout(()=>bar.classList.add('animate'),300);
+        });
+      }
+    }
+  });
+},{threshold:0.12});
+sects.forEach(s=>obs.observe(s));
+// ============ FINALE ============
+let finaleTriggered=false;
+function triggerFinale(){
+  if(finaleTriggered)return;
+  finaleTriggered=true;
+  const btn=document.getElementById('broBtn');
+  btn.style.display='none';
+  const types=['🤜','🤛','💪','🔥','⚡','💯','🎮','🏆','🫡','👊','✊','🤝','💥','🚀','🎯','🛡️','🌟','⭐'];
+  const cx=window.innerWidth/2;
+  const cy=window.innerHeight/2;
+  for(let i=0;i<100;i++){
+    setTimeout(()=>{
+      const h=document.createElement('span');
+      h.className='ex-emoji';
+      h.textContent=types[Math.floor(Math.random()*types.length)];
+      h.style.fontSize=(Math.random()*2+0.8)+'rem';
+      h.style.left=cx+'px';h.style.top=cy+'px';
+      h.style.opacity='1';
+      document.body.appendChild(h);
+      const angle=(Math.PI*2*i)/100+(Math.random()-0.5)*0.5;
+      const dist=Math.random()*Math.max(window.innerWidth,window.innerHeight)*0.65;
+      const tx=Math.cos(angle)*dist;
+      const ty=Math.sin(angle)*dist;
+      requestAnimationFrame(()=>{
+        h.style.transform=`translate(${tx}px,${ty}px) scale(${Math.random()+0.5}) rotate(${Math.random()*720}deg)`;
+        h.style.opacity='0';
+      });
+      setTimeout(()=>h.remove(),2500);
+    },i*20);
+  }
+  setTimeout(()=>{
+    document.getElementById('finalReveal').classList.add('show');
+  },1500);
+}
+</script>
+</body>
+</html>
